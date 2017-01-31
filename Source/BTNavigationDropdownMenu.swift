@@ -148,11 +148,9 @@ open class BTNavigationDropdownMenu: UIView {
         set { configuration.shouldChangeTitleText = newValue }
     }
 
-    
     open var didSelectItemAtIndexHandler: ((Int) -> Void)?
 
     fileprivate (set) var isShown = false
-    fileprivate (set) var isAttributed = false
 
     fileprivate weak var navigationController: UINavigationController?
     fileprivate var configuration = BTConfiguration()
@@ -169,7 +167,7 @@ open class BTNavigationDropdownMenu: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    public init(navigationController: UINavigationController? = nil, containerView: UIView = UIApplication.shared.keyWindow!, title: String, items: [BTConfigurableItem]) {
+    public init(navigationController: UINavigationController? = nil, containerView: UIView = UIApplication.shared.keyWindow!, title: String? = nil, items: [BTConfigurableItem]) {
         // Key window
         guard let window = UIApplication.shared.keyWindow else {
             super.init(frame: .zero)
@@ -184,12 +182,12 @@ open class BTNavigationDropdownMenu: UIView {
         }
         
         // Get titleSize
-        let titleSize = (title as NSString).size(attributes: [NSFontAttributeName : configuration.navigationBarTitleFont])
+        let titleSize = ((title ?? "") as NSString).size(attributes: [NSFontAttributeName : configuration.navigationBarTitleFont])
         
         // Set frame
         let size = CGSize(
             width: titleSize.width + (configuration.arrowPadding + configuration.arrowImage.size.width) * 2,
-            height: navigationController!.navigationBar.frame.height
+            height: navigationController?.navigationBar.frame.height ?? 44
         )
         
         super.init(frame: CGRect(origin: .zero, size: size))
@@ -245,7 +243,7 @@ open class BTNavigationDropdownMenu: UIView {
                 width: menuWrapperBounds.width,
                 height: menuWrapperBounds.height + defaultOffset - navBarHeight - statusBarHeight - tabBarHeight),
             items: items,
-            title: title,
+            title: title ?? "",
             configuration: configuration
         )
         
@@ -283,7 +281,7 @@ open class BTNavigationDropdownMenu: UIView {
         menuTitle.textColor = configuration.menuTitleColor
         menuArrow.sizeToFit()
         menuArrow.center = CGPoint(x: menuTitle.frame.maxX + configuration.arrowPadding, y: frame.size.height / 2)
-        menuWrapper.frame.origin.y = navigationController!.navigationBar.frame.maxY
+        menuWrapper.frame.origin.y = navigationController?.navigationBar.frame.maxY ?? 64
         tableView.reloadData()
     }
     
@@ -313,6 +311,10 @@ open class BTNavigationDropdownMenu: UIView {
     open func setMenuTitle(_ title: String) {
         menuTitle.text = title
     }
+
+    open func setAttributedTitle(with attributedString: NSAttributedString) {
+        menuTitle.attributedText = attributedString
+    }
 }
 
 private extension BTNavigationDropdownMenu {
@@ -333,7 +335,7 @@ private extension BTNavigationDropdownMenu {
     }
 
     func showMenu() {
-        menuWrapper.frame.origin.y = navigationController!.navigationBar.frame.maxY
+        menuWrapper.frame.origin.y = navigationController?.navigationBar.frame.maxY ?? 64
 
         isShown = true
 
@@ -435,7 +437,7 @@ private class BTConfiguration {
     var maskBackgroundColor: UIColor!
     var maskBackgroundOpacity: CGFloat!
     var shouldChangeTitleText: Bool!
-    
+
     init() {
         // Path for image
         let bundle = Bundle(for: BTConfiguration.self)
@@ -514,7 +516,7 @@ extension BTTableView: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = BTTableViewCell(style: .default, reuseIdentifier: "Cell", configuration: configuration)
+        let cell = BTTableViewCell(style: .default, reuseIdentifier: "BTTableViewCell", configuration: configuration)
         cell.textLabel?.text = items[indexPath.row].title
         cell.tintColor = configuration.selectedCellTextLabelColor
         cell.accessoryType = indexPath.row == selectedIndexPath ? .checkmark : .none
@@ -560,9 +562,6 @@ private class BTTableViewCell: UITableViewCell {
         cellContentFrame = CGRect(x: 0, y: 0, width: (UIApplication.shared.keyWindow?.frame.width)!, height: configuration.cellHeight)
         contentView.backgroundColor = configuration.cellBackgroundColor
         selectionStyle = UITableViewCellSelectionStyle.none
-        textLabel!.textColor = configuration.cellTextLabelColor
-        textLabel!.font = configuration.cellTextLabelFont
-        textLabel!.textAlignment = configuration.cellTextLabelAlignment
 
         let separator = BTTableCellContentView(frame: cellContentFrame)
         if let cellSeparatorColor = configuration.cellSeparatorColor {
@@ -570,9 +569,15 @@ private class BTTableViewCell: UITableViewCell {
         }
         contentView.addSubview(separator)
 
-        guard let textLabel = textLabel else { return }
+        guard let textLabel = textLabel else {
+            return
+        }
 
         let cellSize = CGSize(width: cellContentFrame.width, height: cellContentFrame.height)
+
+        textLabel.textColor = configuration.cellTextLabelColor
+        textLabel.font = configuration.cellTextLabelFont
+        textLabel.textAlignment = configuration.cellTextLabelAlignment
 
         switch textLabel.textAlignment {
         case .center:
