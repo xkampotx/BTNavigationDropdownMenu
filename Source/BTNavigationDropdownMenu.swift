@@ -33,57 +33,57 @@ public protocol BTConfigurableItem {
 private let defaultOffset: CGFloat = 300
 
 // MARK: BTNavigationDropdownMenu
-public class BTNavigationDropdownMenu: UIView {
+open class BTNavigationDropdownMenu: UIView {
 
     // Default is darkGray
-    public var menuTitleColor: UIColor! {
+    open var menuTitleColor: UIColor! {
         get { return configuration.menuTitleColor }
         set { configuration.menuTitleColor = newValue }
     }
 
     // Default is 50
-    public var cellHeight: CGFloat! {
+    open var cellHeight: CGFloat! {
         get { return configuration.cellHeight }
         set { configuration.cellHeight = newValue }
     }
 
     // Default is white
-    public var cellBackgroundColor: UIColor! {
+    open var cellBackgroundColor: UIColor! {
         get { return configuration.cellBackgroundColor }
         set { configuration.cellBackgroundColor = newValue }
     }
 
     // Default is white
-    public var arrowTintColor: UIColor! {
+    open var arrowTintColor: UIColor! {
         get { return menuArrow.tintColor }
         set { menuArrow.tintColor = newValue }
     }
 
-    public var cellSeparatorColor: UIColor! {
+    open var cellSeparatorColor: UIColor! {
         get { return configuration.cellSeparatorColor }
         set { configuration.cellSeparatorColor = newValue }
     }
 
     // The color of the text inside cell. Default is darkGray
-    public var cellTextLabelColor: UIColor! {
+    open var cellTextLabelColor: UIColor! {
         get { return configuration.cellTextLabelColor }
         set { configuration.cellTextLabelColor = newValue }
     }
     
     // The color of the text inside a selected cell. Default is darkGray
-    public var selectedCellTextLabelColor: UIColor! {
+    open var selectedCellTextLabelColor: UIColor! {
         get { return configuration.selectedCellTextLabelColor }
         set { configuration.selectedCellTextLabelColor = newValue }
     }
     
     // The font of the text inside cell. Default is HelveticaNeue-Bold, size 17
-    public var cellTextLabelFont: UIFont! {
+    open var cellTextLabelFont: UIFont! {
         get { return configuration.cellTextLabelFont }
         set { configuration.cellTextLabelFont = newValue }
     }
     
     // The font of the navigation bar title. Default is HelveticaNeue-Bold, size 17
-    public var navigationBarTitleFont: UIFont! {
+    open var navigationBarTitleFont: UIFont! {
         get { return configuration.navigationBarTitleFont }
         set {
             configuration.navigationBarTitleFont = newValue
@@ -92,31 +92,31 @@ public class BTNavigationDropdownMenu: UIView {
     }
     
     // The alignment of the text inside cell. Default is .Left
-    public var cellTextLabelAlignment: NSTextAlignment! {
+    open var cellTextLabelAlignment: NSTextAlignment! {
         get { return configuration.cellTextLabelAlignment }
         set { configuration.cellTextLabelAlignment = newValue }
     }
     
     // The color of the cell when the cell is selected. Default is lightGray
-    public var cellSelectionColor: UIColor! {
+    open var cellSelectionColor: UIColor! {
         get { return configuration.cellSelectionColor }
         set { configuration.cellSelectionColor = newValue }
     }
     
     // The boolean value that decides if selected color of cell is visible when the menu is shown. Default is false
-    public var shouldKeepSelectedCellColor: Bool! {
+    open var shouldKeepSelectedCellColor: Bool! {
         get { return configuration.shouldKeepSelectedCellColor }
         set { configuration.shouldKeepSelectedCellColor = newValue }
     }
     
     // The animation duration of showing/hiding menu. Default is 0.3
-    public var animationDuration: TimeInterval! {
+    open var animationDuration: TimeInterval! {
         get { return configuration.animationDuration }
         set { configuration.animationDuration = newValue }
     }
 
     // The arrow next to navigation title
-    public var arrowImage: UIImage! {
+    open var arrowImage: UIImage! {
         get { return configuration.arrowImage }
         set {
             configuration.arrowImage = newValue.withRenderingMode(.alwaysTemplate)
@@ -125,31 +125,31 @@ public class BTNavigationDropdownMenu: UIView {
     }
     
     // The padding between navigation title and arrow
-    public var arrowPadding: CGFloat! {
+    open var arrowPadding: CGFloat! {
         get { return configuration.arrowPadding }
         set { configuration.arrowPadding = newValue }
     }
     
     // The color of the mask layer. Default is black
-    public var maskBackgroundColor: UIColor! {
+    open var maskBackgroundColor: UIColor! {
         get { return configuration.maskBackgroundColor }
         set { configuration.maskBackgroundColor = newValue }
     }
     
     // The opacity of the mask layer. Default is 0.3
-    public var maskBackgroundOpacity: CGFloat! {
+    open var maskBackgroundOpacity: CGFloat! {
         get { return configuration.maskBackgroundOpacity }
         set { configuration.maskBackgroundOpacity = newValue }
     }
     
     // The boolean value that decides if you want to change the title text when a cell is selected. Default is true
-    public var shouldChangeTitleText: Bool! {
+    open var shouldChangeTitleText: Bool! {
         get { return configuration.shouldChangeTitleText }
         set { configuration.shouldChangeTitleText = newValue }
     }
 
     
-    public var didSelectItemAtIndexHandler: ((Int) -> Void)?
+    open var didSelectItemAtIndexHandler: ((Int) -> Void)?
 
     fileprivate (set) var isShown = false
     fileprivate (set) var isAttributed = false
@@ -277,7 +277,7 @@ public class BTNavigationDropdownMenu: UIView {
         menuWrapper.isHidden = true
     }
     
-    override public func layoutSubviews() {
+    override open func layoutSubviews() {
         menuTitle.sizeToFit()
         menuTitle.center = CGPoint(x: frame.size.width / 2, y: frame.size.height / 2)
         menuTitle.textColor = configuration.menuTitleColor
@@ -287,30 +287,30 @@ public class BTNavigationDropdownMenu: UIView {
         tableView.reloadData()
     }
     
-    public func show() {
+    open func show() {
         if !isShown {
             showMenu()
         }
     }
     
-    public func hide() {
+    open func hide() {
         if isShown {
             hideMenu()
         }
     }
 
-    public func toggle() {
+    open func toggle() {
         isShown ? hideMenu() : showMenu()
     }
     
-    public func update(with items: [BTConfigurableItem]) {
+    open func update(with items: [BTConfigurableItem]) {
         if !items.isEmpty {
             tableView.items = items
             tableView.reloadData()
         }
     }
     
-    public func setMenuTitle(_ title: String) {
+    open func setMenuTitle(_ title: String) {
         menuTitle.text = title
     }
 }
